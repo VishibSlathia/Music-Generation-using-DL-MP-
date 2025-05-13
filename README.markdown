@@ -44,8 +44,7 @@ To set up the project locally, follow these steps:
 3. **Install Dependencies**:
    Install required Python packages:
    ```bash
-   pip install tensorflow music21 midi_neural_processor keras_hub keras>=3.6.0 pyfluidsynth scipy numpy jupyter librosa matplotlib
-   ```
+   pip install -r requirements.txt
    Install FluidSynth for MIDI playback (Ubuntu-based systems):
    ```bash
    sudo apt-get install -y fluidsynth
