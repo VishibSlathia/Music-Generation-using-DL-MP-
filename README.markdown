@@ -43,22 +43,24 @@ To set up the project locally, follow these steps:
 
 3. **Install Dependencies**:
    Install required Python packages:
+
    ```bash
    pip install -r requirements.txt
+   ```
    Install FluidSynth for MIDI playback (Ubuntu-based systems):
    ```bash
    sudo apt-get install -y fluidsynth
    ```
    For other operating systems, refer to [FluidSynth documentation](https://github.com/FluidSynth/fluidsynth).
 
-4. **Download MAESTRO Dataset**:
+5. **Download MAESTRO Dataset**:
    The `transformer.ipynb` notebook automatically downloads the MAESTRO dataset to `datasets/maestro/` using:
    ```python
    paths = sorted(download_maestro(output_dir="datasets/maestro"))
    ```
    Ensure sufficient disk space (~600 MB).
 
-5. **Obtain Pre-trained Model Weights**:
+6. **Obtain Pre-trained Model Weights**:
    For the 1D CNN, place `1dcnn_model.weights.h5` in `midi_model_checkpoints/` (as referenced in `music_generation.ipynb`). For the Transformer, the model is saved as `music_transformer.pkl` or `tmp/music_transformer.keras`. If unavailable, train the models as described in [Usage](#usage).
 
 ## Usage
