@@ -1,6 +1,6 @@
 # Music Generation using Deep Learning
 
-The **Music-Generation-using-DL-MP-** project is a deep learning-based application for generating piano music sequences using MIDI files. It implements two models: a 1D Convolutional Neural Network (1D CNN) and a Transformer model with Relative Global Attention, leveraging the MAESTRO dataset. The project uses the `music21` and `midi_neural_processor` libraries for MIDI processing and TensorFlow/Keras for model development. The provided Jupyter notebooks (`music_generation.ipynb` and `transformer.ipynb`) enable data preprocessing, model training, and music generation.
+The **Music-Generation-using-DL-MP-** project is a deep learning-based system for generating piano music sequences using MIDI files. It features multiple models including a 1D Convolutional Neural Network (1D CNN), a GRU model, an LSTM model, and a Transformer model with Relative Global Attention, trained on the MAESTRO dataset. The project supports both interactive Jupyter notebook exploration and a FastAPI backend for programmatic access and local MIDI playback using Pygame.
 
 ## Table of Contents
 - [Overview](#overview)
@@ -13,21 +13,25 @@ The **Music-Generation-using-DL-MP-** project is a deep learning-based applicati
 - [License](#license)
 
 ## Overview
-This project generates piano music using two deep learning models:
-- **1D CNN**: Processes MIDI sequences for music generation (implemented in `music_generation.ipynb`).
-- **Transformer**: Utilizes Relative Global Attention for sequence modeling, trained on the MAESTRO dataset (implemented in `transformer.ipynb`).
-The models process MIDI files to predict and generate new musical sequences, with support for MIDI playback and visualization.
+
+This project generates piano music using deep learning models:
+- **1D CNN**: Extracts sequential patterns from MIDI events.
+- **GRU**: Recurrent model for sequential generation.
+- **LSTM**: Long Short-Term Memory network for capturing temporal dynamics.
+- **Transformer**: Employs Relative Global Attention for long-range dependencies.
+
+MIDI input is tokenized, modeled, and then converted back to playable MIDI sequences, which can be served via an API and played locally.
 
 ## Features
-- Generates piano music using 1D CNN and Transformer models.
-- Processes MIDI files with `music21` and `midi_neural_processor`.
-- Downloads and preprocesses the MAESTRO dataset for training.
-- Supports loading pre-trained models and generating MIDI sequences.
-- Visualizes generated audio with waveforms and spectrograms.
-- Saves models using pickle for reuse.
+
+- Generate piano music using 1D CNN, GRU, LSTM, and Transformer models.
+- Train models using the MAESTRO dataset.
+- Upload and play generated MIDI files using FastAPI + Pygame.
+- Visualize generated audio using waveforms and spectrograms.
+- Interactive notebooks for training and generation.
+- Support for pre-trained weights and saved models.
 
 ## Installation
-To set up the project locally, follow these steps:
 
 1. **Clone the Repository**:
    ```bash
@@ -35,120 +39,138 @@ To set up the project locally, follow these steps:
    cd Music-Generation-using-DL-MP-
    ```
 
-2. **Create a Virtual Environment** (recommended):
+2. **Create a Virtual Environment**:
    ```bash
    python -m venv venv
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
 3. **Install Dependencies**:
-   Install required Python packages:
-
    ```bash
    pip install -r requirements.txt
    ```
-   Install FluidSynth for MIDI playback (Ubuntu-based systems):
-   ```bash
-   sudo apt-get install -y fluidsynth
-   ```
-   For other operating systems, refer to [FluidSynth documentation](https://github.com/FluidSynth/fluidsynth).
 
-5. **Download MAESTRO Dataset**:
-   The `transformer.ipynb` notebook automatically downloads the MAESTRO dataset to `datasets/maestro/` using:
-   ```python
-   paths = sorted(download_maestro(output_dir="datasets/maestro"))
-   ```
-   Ensure sufficient disk space (~600 MB).
-
-6. **Obtain Pre-trained Model Weights**:
-   For the 1D CNN, place `1dcnn_model.weights.h5` in `midi_model_checkpoints/` (as referenced in `music_generation.ipynb`). For the Transformer, the model is saved as `music_transformer.pkl` or `tmp/music_transformer.keras`. If unavailable, train the models as described in [Usage](#usage).
+4. **Install System Dependency (for MIDI playback)**:
+   - On Ubuntu:
+     ```bash
+     sudo apt-get install -y fluidsynth
+     ```
+   - On Windows/macOS, install a compatible SoundFont and MIDI driver for Pygame playback.
 
 ## Usage
-1. **Prepare the Environment**:
-   Ensure dependencies are installed and the MAESTRO dataset is downloaded.
 
-2. **Run the Jupyter Notebooks**:
-   Start Jupyter Notebook:
+### 🚀 FastAPI Mode
+
+1. **Start the API Server**:
+   ```bash
+   uvicorn app.main:app --reload
+   ```
+
+2. **Access API Docs**:
+   Open your browser and go to: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+
+3. **Upload and Play MIDI**:
+   - Use the `/upload-midi/` endpoint to upload `.mid` files.
+   - Pygame will play the MIDI locally on your machine.
+
+   Example client:
+   ```python
+   import requests
+
+   with open("generated_music_gru.mid", "rb") as f:
+       response = requests.post("http://127.0.0.1:8000/upload-midi/", files={"file": f})
+   print(response.json())
+   ```
+
+### 🧠 Notebook Mode
+
+1. **Launch Jupyter Notebooks**:
    ```bash
    jupyter notebook
    ```
 
-   - **For 1D CNN Model (`music_generation.ipynb`)**:
-     - Open `music_generation.ipynb`.
-     - Execute cells to install FluidSynth, load the pre-trained model, and generate music:
-       ```python
-       model = tf.keras.Model(inputs, outputs)
-       model.load_weights('/content/drive/MyDrive/midi_model_checkpoints/1dcnn_model.weights.h5')
-       ```
-     - Generate MIDI files using the provided generation cells.
+2. Open and run:
+   - `music_generation.ipynb` for 1D CNN, GRU, and LSTM
+   - `transformer.ipynb` for Transformer model
 
-   - **For Transformer Model (`transformer.ipynb`)**:
-     - Open `transformer.ipynb`.
-     - Execute cells to:
-       - Install dependencies and FluidSynth.
-       - Download and preprocess the MAESTRO dataset.
-       - Create and train the Transformer model with `MidiDataset` and `RelativeGlobalAttention`.
-       - Generate music using a seed MIDI file:
-         ```python
-         output_file = generate_music(model, val_paths[-1], out_dir="tmp/", top_k=15)
-         ```
-       - Visualize the output with waveforms and spectrograms using `librosa` and `matplotlib`.
-       - Save the model:
-         ```python
-         with open("music_transformer.pkl", "wb") as file:
-             pickle.dump(model, file)
-         ```
+3. To generate and save a MIDI file using Transformer:
+   ```python
+   output_file = generate_music(model, val_paths[-1], out_dir="tmp/", top_k=15)
+   ```
 
-3. **Train Models** (if needed):
-   - For the 1D CNN, update the data path in `music_generation.ipynb` and run training cells. Save weights:
-     ```python
-     model.save_weights('1dcnn_model.weights.h5')
-     ```
-   - For the Transformer, run the training cells in `transformer.ipynb` to train on the MAESTRO dataset. Save the model as shown above.
+4. To visualize:
+   ```python
+   y, sr = librosa.load(output_file_wav, sr=None)
+   librosa.display.waveshow(y, sr=sr)
+   ```
 
-4. **Generate and Visualize Music**:
-   - Generate MIDI files using either notebook.
-   - Convert MIDI to WAV and visualize using `transformer.ipynb`:
-     ```python
-     y, sr = librosa.load(audio_path, sr=None)
-     librosa.display.waveshow(y, sr=sr)
-     ```
+### 💾 Pretrained Models
+
+- Place 1D CNN weights at: `midi_model_checkpoints/1dcnn_model.weights.h5`
+- Place Transformer model at: `music_transformer.pkl` or `tmp/music_transformer.keras`
+
+### 📦 Training (Optional)
+
+- For CNN/GRU/LSTM: Use `music_generation.ipynb`
+- For Transformer: Use `transformer.ipynb`
+- Save your models:
+   ```python
+   model.save_weights("1dcnn_model.weights.h5")
+   with open("music_transformer.pkl", "wb") as f:
+       pickle.dump(model, f)
+   ```
 
 ## Project Structure
+
 ```
 Music-Generation-using-DL-MP-/
-├── data/                           # Directory for MIDI files (optional)
-├── datasets/maestro/               # MAESTRO dataset directory
-├── midi_model_checkpoints/         # Pre-trained 1D CNN model weights
-├── tmp/                            # Generated MIDI and WAV files
-├── music_generation.ipynb          # 1D CNN model notebook
-├── transformer.ipynb               # Transformer model notebook
-├── music_transformer.pkl           # Saved Transformer model
-├── README.md                       # Project documentation
+├── app/
+│   ├── main.py                   # FastAPI endpoints
+│   ├── playback.py               # MIDI playback using pygame
+├── datasets/maestro/            # MAESTRO dataset
+├── midi_model_checkpoints/      # Saved 1D CNN weights
+├── tmp/                         # Generated MIDI and WAV files
+├── music_generation.ipynb       # 1D CNN, GRU & LSTM training notebook
+├── transformer.ipynb            # Transformer training notebook
+├── music_transformer.pkl        # Pickled Transformer model
+├── requirements.txt             # Python dependencies
+├── README.md                    # Documentation
 ```
 
 ## Dependencies
-- **Python Packages**:
-  - `tensorflow`, `keras>=3.6.0`, `keras_hub`: For model development.
-  - `music21`, `midi_neural_processor`, `pyfluidsynth`: For MIDI processing.
-  - `numpy`, `scipy`, `librosa`, `matplotlib`: For data processing and visualization.
-  - `jupyter`: For running notebooks.
-  Install using:
-  ```bash
-  pip install tensorflow music21 midi_neural_processor keras_hub keras>=3.6.0 pyfluidsynth scipy numpy jupyter librosa matplotlib
-  ```
-- **System Dependencies**:
-  - `fluidsynth`: For MIDI playback (install via `sudo apt-get install -y fluidsynth` on Ubuntu).
+
+Install everything via:
+```bash
+pip install -r requirements.txt
+```
+
+Or manually:
+
+- **Python packages**:
+  - `tensorflow`, `keras`, `keras_hub`
+  - `music21`, `midi_neural_processor`, `pyfluidsynth`
+  - `numpy`, `scipy`, `librosa`, `matplotlib`, `pygame`
+  - `fastapi`, `uvicorn`, `jupyter`, `pickle-mixin`
+
+- **System dependencies**:
+  - `fluidsynth` (Ubuntu) for MIDI rendering
+  - SoundFonts/MIDI driver for Pygame playback
 
 ## Contributing
-Contributions are welcome! To contribute:
-1. Fork the repository.
-2. Create a new branch (`git checkout -b feature-branch`).
-3. Make changes and commit (`git commit -m "Add feature"`).
-4. Push to the branch (`git push origin feature-branch`).
-5. Open a pull request.
 
-Ensure code follows the project's style and includes documentation.
+Contributions are welcome!
+
+1. Fork the repository
+2. Create a new branch:
+   ```bash
+   git checkout -b feature-branch
+   ```
+3. Commit your changes:
+   ```bash
+   git commit -m "Add new feature"
+   ```
+4. Push the branch and open a pull request.
 
 ## License
-This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.
