@@ -63,7 +63,8 @@ MIDI input is tokenized, modeled, and then converted back to playable MIDI seque
 
 1. **Start the API Server**:
    ```bash
-   uvicorn app.main:app --reload
+   uvicorn generate_music:app --reload
+   uvicorn play_mid:app --reload
    ```
 
 2. **Access API Docs**:
@@ -132,10 +133,8 @@ Music-Generation-using-DL/
 │   └── gru_model.weights.h5
 │   └── transformer_model.pkl
 ├── notebooks/                           # Jupyter notebooks for training and generation
-│   └── music_generation.ipynb           # 1D CNN
+│   └── music_generation.ipynb           # Data prep, LSTM, GRU, 1D CNN
 │   └── transformer.ipynb                # Transformer
-│   └── lstm_generation.ipynb            # LSTM model
-│   └── gru_generation.ipynb             # GRU model
 ├── generate_music.py                    # Script to generate music via CLI or API
 ├── play_mid.py                          # Script to play MIDI files using Pygame
 ├── transformer.py                       # Transformer model implementation
