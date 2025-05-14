@@ -64,24 +64,19 @@ MIDI input is tokenized, modeled, and then converted back to playable MIDI seque
 1. **Start the API Server**:
    ```bash
    uvicorn generate_music:app --reload
-   uvicorn play_mid:app --reload
    ```
 
 2. **Access API Docs**:
    Open your browser and go to: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
 
 3. **Upload and Play MIDI**:
-   - Use the `/upload-midi/` endpoint to upload `.mid` files.
-   - Pygame will play the MIDI locally on your machine.
-
-   Example client:
-   ```python
-   import requests
-
-   with open("generated_music_gru.mid", "rb") as f:
-       response = requests.post("http://127.0.0.1:8000/upload-midi/", files={"file": f})
-   print(response.json())
+   - Use 
+   ```bash
+   uvicorn play_mid:app --reload
    ```
+   Open your browser and go to: [http://127.0.0.1:8000/docs](http://127.0.0.1:8000/docs)
+   upload .mid file and listen.
+   
 
 ### 🧠 Notebook Mode
 
