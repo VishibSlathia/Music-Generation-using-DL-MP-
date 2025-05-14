@@ -1,6 +1,6 @@
 # Music Generation using Deep Learning
 
-The **Music-Generation-using-DL-MP-** project is a deep learning-based system for generating piano music sequences using MIDI files. It features multiple models including a 1D Convolutional Neural Network (1D CNN), a GRU model, an LSTM model, and a Transformer model with Relative Global Attention, trained on the MAESTRO dataset. The project supports both interactive Jupyter notebook exploration and a FastAPI backend for programmatic access and local MIDI playback using Pygame.
+The **Music-Generation-using-DL** project is a deep learning-based system for generating piano music sequences using MIDI files. It features multiple models including a 1D Convolutional Neural Network (1D CNN), a GRU model, an LSTM model, and a Transformer model with Relative Global Attention, trained on the MAESTRO dataset. The project supports both interactive Jupyter notebook exploration and a FastAPI backend for programmatic access and local MIDI playback using Pygame.
 
 ## Table of Contents
 - [Overview](#overview)
