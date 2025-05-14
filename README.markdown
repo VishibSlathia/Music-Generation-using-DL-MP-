@@ -123,18 +123,24 @@ MIDI input is tokenized, modeled, and then converted back to playable MIDI seque
 ## Project Structure
 
 ```
-Music-Generation-using-DL-MP-/
-├── app/
-│   ├── main.py                   # FastAPI endpoints
-│   ├── playback.py               # MIDI playback using pygame
-├── datasets/maestro/            # MAESTRO dataset
-├── midi_model_checkpoints/      # Saved 1D CNN weights
-├── tmp/                         # Generated MIDI and WAV files
-├── music_generation.ipynb       # 1D CNN, GRU & LSTM training notebook
-├── transformer.ipynb            # Transformer training notebook
-├── music_transformer.pkl        # Pickled Transformer model
-├── requirements.txt             # Python dependencies
-├── README.md                    # Documentation
+Music-Generation-using-DL/
+├── Demonstration video/                 # Demo video or instructions
+│   └── video.txt
+├── checkpoints/                         # Model checkpoints (1D CNN, Transformer, LSTM, GRU)
+│   └── 1dcnn_model.weights.h5
+│   └── lstm_model.weights.h5
+│   └── gru_model.weights.h5
+│   └── transformer_model.pkl
+├── notebooks/                           # Jupyter notebooks for training and generation
+│   └── music_generation.ipynb           # 1D CNN
+│   └── transformer.ipynb                # Transformer
+│   └── lstm_generation.ipynb            # LSTM model
+│   └── gru_generation.ipynb             # GRU model
+├── generate_music.py                    # Script to generate music via CLI or API
+├── play_mid.py                          # Script to play MIDI files using Pygame
+├── transformer.py                       # Transformer model implementation
+├── requirements.txt                     # All required dependencies
+├── README.markdown                      
 ```
 
 ## Dependencies
